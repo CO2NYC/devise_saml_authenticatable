@@ -38,15 +38,22 @@ module Devise
 			
 			private
 			def parse_saml_response
-				@response = OneLogin::RubySaml::Response.new(
-					params[:SAMLResponse],
-					{:settings            => saml_config(get_idp_entity_id(params)),
-					 :allowed_clock_drift => Devise.allowed_clock_drift_in_seconds}
-				)
-				unless @response.is_valid?
-					failed_auth("Auth errors: #{@response.errors.join(', ')}")
-					ap '====== PARSE ERRORS ====='
-					ap @response.errors.join(', ')
+				begin
+					@response = OneLogin::RubySaml::Response.new(
+						params[:SAMLResponse],
+						{:settings            => saml_config(get_idp_entity_id(params)),
+						 :allowed_clock_drift => Devise.allowed_clock_drift_in_seconds}
+					)
+					unless @response.is_valid?
+						failed_auth("Auth errors: #{@response.errors.join(', ')}")
+						ap '====== PARSE ERRORS ====='
+						ap @response.errors.join(', ')
+						Airbrake.notify(:error_message => @response.errors.join(', '))
+					end
+					ap '====== VALID RESPONSE ====='
+					ap @response
+				rescue => e
+					Airbrake.notify(e)
 				end
 			end
 			

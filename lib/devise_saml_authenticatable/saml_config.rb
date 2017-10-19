@@ -37,6 +37,8 @@ module DeviseSamlAuthenticatable
 		
 		
 		def get_idp_entity_id(params)
+			ap '===== ENTITY ID PARAMS ======'
+			ap params
 			Devise.idp_entity_id_reader.entity_id(params)
 		end
 	end
