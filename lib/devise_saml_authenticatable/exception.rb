@@ -1,6 +1,6 @@
 module DeviseSamlAuthenticatable
-
-  class SamlException < Exception
-  end
+	
+	class SamlException < Exception
+	end
 
 end
