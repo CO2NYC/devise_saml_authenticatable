@@ -44,11 +44,17 @@ module Devise
 						{:settings            => saml_config(get_idp_entity_id(params)),
 						 :allowed_clock_drift => Devise.allowed_clock_drift_in_seconds}
 					)
-					if !@response.is_valid? && !@response.errors.join(', ').include?('Invalid Signature on SAML Response')
-						failed_auth("Auth errors: #{@response.errors.join(', ')}")
-						ap '====== PARSE ERRORS ====='
-						ap @response.errors.join(', ')
-						Airbrake.notify(:error_message => @response.errors.join(', '))
+					unless @response.is_valid?
+						
+						error_message = "Auth errors: #{@response.errors.join(', ')}"
+						
+						unless error_message.downcase.strip.include?('invalid signature')
+							failed_auth("Auth errors: #{@response.errors.join(', ')}")
+							ap '====== PARSE ERRORS ====='
+							ap @response.errors.join(', ')
+							Airbrake.notify(:error_message => @response.errors.join(', '))
+						end
+					
 					end
 					ap '====== VALID RESPONSE ====='
 					ap @response
