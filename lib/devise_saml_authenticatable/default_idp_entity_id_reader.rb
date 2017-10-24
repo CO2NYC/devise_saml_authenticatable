@@ -13,13 +13,13 @@ module DeviseSamlAuthenticatable
 				elsif params[:SAMLResponse]
 					ap '====== RESPONSE SENT TO RUBY SAML ====='
 					ap params[:SAMLResponse]
-					response = OneLogin::RubySaml::Response.new(
+					saml_response = OneLogin::RubySaml::Response.new(
 						params[:SAMLResponse],
 						{:allowed_clock_drift => Devise.allowed_clock_drift_in_seconds}
 					).issuers.first
 					ap '====== RESPONSE ======='
-					ap response
-					response
+					ap saml_response
+					saml_response
 				end
 			rescue => e
 				Airbrake.notify(e)
