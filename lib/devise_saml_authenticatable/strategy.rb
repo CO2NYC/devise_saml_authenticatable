@@ -48,7 +48,7 @@ module Devise
 						
 						error_message = "Auth errors: #{@response.errors.join(', ')}"
 						
-						unless error_message.downcase.strip.include?('invalid signature')
+						if !error_message.downcase.strip.include?('invalid signature') && !error_message.downcase.strip.include?('current time')
 							failed_auth("Auth errors: #{@response.errors.join(', ')}")
 							ap '====== PARSE ERRORS ====='
 							ap @response.errors.join(', ')
